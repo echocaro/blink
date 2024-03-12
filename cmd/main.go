@@ -1,7 +1,6 @@
 package main
 
 import (
-	"blink/form"
 	"blink/ui"
 	"fmt"
 	"log"
@@ -11,7 +10,7 @@ import (
 )
 
 func main() {
-	p := tea.NewProgram(ui.InitialModel(form.Confirm))
+	p := tea.NewProgram(ui.InitialModel())
 
 	if len(os.Getenv("DEBUG")) > 0 {
 		f, err := tea.LogToFile("debug.log", "debug")

@@ -43,16 +43,15 @@ type MainModel struct {
 	TimerModel   timer.Model
 	state        AppState
 	timerState   TimerState
-	start        bool
 }
 
-func InitialModel(confirmValue bool) MainModel {
+func InitialModel() MainModel {
 	minutesModel := views.NewMinutesModel(minutesDuration, minutesInterval)
 	secondsModel := views.NewSecondsModel(20 * time.Second)
+
 	return MainModel{
 		timerState:   TimerStopped,
 		state:        DisplayingForm,
-		start:        confirmValue,
 		form:         form.CreateForm(),
 		minutesTimer: minutesModel.(views.MinutesModel),
 		secondsTimer: secondsModel.(views.SecondsModel),
@@ -87,18 +86,14 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.form.Form = updatedForm
 			return m, cmd
 		case tea.KeyEnter:
-			if !form.Confirm {
+			if form.Confirm == "yes" {
 				return m, tea.Quit
 			}
 
 			if m.state == DisplayingForm {
-				m.start = form.Confirm
-
-				if m.start {
-					m.state = TimerStarted
-					m.timerState = CountingMinutes
-					return m, m.minutesTimer.StartTimer(minutesDuration, minutesInterval)
-				}
+				m.state = TimerStarted
+				m.timerState = CountingMinutes
+				return m, m.minutesTimer.StartTimer(minutesDuration, minutesInterval)
 			}
 		}
 	}
