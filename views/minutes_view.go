@@ -1,0 +1,56 @@
+package views
+
+import (
+	"time"
+
+	"github.com/charmbracelet/bubbles/timer"
+	tea "github.com/charmbracelet/bubbletea"
+)
+
+type MinutesModel struct {
+	duration                time.Duration
+	Timer                   timer.Model
+	MinutesFirstRunComplete bool
+}
+
+func NewMinutesModel(duration, interval time.Duration) tea.Model {
+	tm := timer.NewWithInterval(duration, interval)
+
+	return MinutesModel{
+		duration:                duration,
+		Timer:                   tm,
+		MinutesFirstRunComplete: false,
+	}
+}
+
+func (m MinutesModel) Init() tea.Cmd {
+	return nil
+}
+
+func (m *MinutesModel) StartTimer(duration, interval time.Duration) tea.Cmd {
+	if m.MinutesFirstRunComplete {
+		return m.Reset(duration, interval)
+	} else {
+		m.MinutesFirstRunComplete = true
+		return m.start()
+	}
+}
+
+func (m *MinutesModel) start() tea.Cmd {
+	return m.Timer.Start()
+}
+
+func (m *MinutesModel) Reset(duration, interval time.Duration) tea.Cmd {
+	m.Timer = timer.NewWithInterval(duration, interval)
+	return m.Timer.Start()
+}
+
+func (m MinutesModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
+	m.Timer, cmd = m.Timer.Update(msg)
+	return m, cmd
+}
+
+func (m MinutesModel) View() string {
+	return m.Timer.View()
+}
