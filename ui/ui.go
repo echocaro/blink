@@ -5,6 +5,7 @@ import (
 	"blink/notification"
 	"blink/sound"
 	"blink/views"
+	"log"
 	"strings"
 	"time"
 
@@ -70,21 +71,12 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
+		case "up", "k":
+			log.Printf("we are here: %+v", msg.String())
+		case "down", "j":
+			log.Printf("We are moving down: %+v", msg.String())
 		}
 		switch msg.Type {
-		case tea.KeyLeft, tea.KeyRight:
-			var cmd tea.Cmd
-
-			updatedModel, cmd := m.form.Form.Update(msg)
-
-			updatedForm, ok := updatedModel.(*huh.Form)
-
-			if !ok {
-				return m, nil
-			}
-
-			m.form.Form = updatedForm
-			return m, cmd
 		case tea.KeyEnter:
 			if form.Confirm == "yes" {
 				return m, tea.Quit
@@ -99,6 +91,20 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	switch m.state {
+	case DisplayingForm:
+		var cmd tea.Cmd
+
+		updatedModel, cmd := m.form.Form.Update(msg)
+
+		updatedForm, ok := updatedModel.(*huh.Form)
+
+		if !ok {
+			return m, nil
+		}
+
+		m.form.Form = updatedForm
+		return m, cmd
+
 	case TimerStarted:
 		switch m.timerState {
 		case CountingMinutes:

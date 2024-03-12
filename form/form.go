@@ -21,12 +21,8 @@ func CreateForm() FormModel {
 					huh.NewOption("Yes!", "yes"),
 					huh.NewOption("Yes, but run in the background.", "background"),
 					huh.NewOption("No.", "no"),
-				),
-			// huh.NewConfirm().
-			// 	Title("Ready to get started?").
-			// 	Affirmative("Yes! 🙌").
-			// 	Negative("No. 🙅").
-			// 	Value(&Confirm),
+				).
+				Value(&Confirm),
 		),
 	).WithTheme(charm)
 
