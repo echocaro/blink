@@ -5,6 +5,7 @@ import (
 	"blink/notification"
 	"blink/sound"
 	"blink/views"
+	"log"
 	"strings"
 	"time"
 
@@ -73,7 +74,8 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		switch msg.Type {
 		case tea.KeyEnter:
-			if form.Confirm == "yes" {
+			log.Printf("What is Confirm: %+v", m.form.Confirm)
+			if m.form.Confirm == "no" {
 				return m, tea.Quit
 			}
 
@@ -96,6 +98,8 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if !ok {
 			return m, nil
 		}
+
+		log.Printf("What is confirm here: %+v", m.form.Confirm)
 
 		m.form.Form = updatedForm
 		return m, cmd
