@@ -5,7 +5,6 @@ import (
 	"blink/notification"
 	"blink/sound"
 	"blink/views"
-	"log"
 	"strings"
 	"time"
 
@@ -71,10 +70,6 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
-		case "up", "k":
-			log.Printf("we are here: %+v", msg.String())
-		case "down", "j":
-			log.Printf("We are moving down: %+v", msg.String())
 		}
 		switch msg.Type {
 		case tea.KeyEnter:
