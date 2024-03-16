@@ -95,9 +95,6 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if form.Confirm == "no" {
 					return m, tea.Quit
 				}
-				if form.Confirm == "background" {
-					return m, tea.Quit
-				}
 				if form.Confirm == "yes" {
 					m.state = TimerStarted
 					m.timerState = CountingMinutes
