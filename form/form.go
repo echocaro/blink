@@ -19,7 +19,7 @@ func CreateForm() FormModel {
 				Title("Are you ready to get started?").
 				Options(
 					huh.NewOption[string]("Yes!", "yes"),
-					huh.NewOption[string]("Yes, but run in the background.", "background"),
+					// huh.NewOption[string]("Yes, but run in the background.", "background"),
 					huh.NewOption[string]("No.", "no"),
 				).
 				Value(&Confirm),
