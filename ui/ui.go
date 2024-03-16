@@ -5,6 +5,7 @@ import (
 	"blink/notification"
 	"blink/sound"
 	"blink/views"
+	"log"
 	"strings"
 	"time"
 
@@ -21,6 +22,7 @@ type (
 
 const (
 	DisplayingForm AppState = iota
+	formSubmitted
 	TimerStarted
 )
 
@@ -37,25 +39,26 @@ const (
 )
 
 type MainModel struct {
-	form         form.FormModel
-	secondsTimer views.SecondsModel
-	minutesTimer views.MinutesModel
-	TimerModel   timer.Model
-	state        AppState
-	timerState   TimerState
-	start        bool
+	form          form.FormModel
+	secondsTimer  views.SecondsModel
+	minutesTimer  views.MinutesModel
+	TimerModel    timer.Model
+	state         AppState
+	timerState    TimerState
+	formSubmitted bool
 }
 
-func InitialModel(confirmValue bool) MainModel {
+func InitialModel() MainModel {
 	minutesModel := views.NewMinutesModel(minutesDuration, minutesInterval)
 	secondsModel := views.NewSecondsModel(20 * time.Second)
+
 	return MainModel{
-		timerState:   TimerStopped,
-		state:        DisplayingForm,
-		start:        confirmValue,
-		form:         form.CreateForm(),
-		minutesTimer: minutesModel.(views.MinutesModel),
-		secondsTimer: secondsModel.(views.SecondsModel),
+		timerState:    TimerStopped,
+		state:         DisplayingForm,
+		form:          form.CreateForm(),
+		minutesTimer:  minutesModel.(views.MinutesModel),
+		secondsTimer:  secondsModel.(views.SecondsModel),
+		formSubmitted: false,
 	}
 }
 
@@ -73,37 +76,55 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 		switch msg.Type {
-		case tea.KeyLeft, tea.KeyRight:
-			var cmd tea.Cmd
-
-			updatedModel, cmd := m.form.Form.Update(msg)
-
-			updatedForm, ok := updatedModel.(*huh.Form)
-
-			if !ok {
-				return m, nil
-			}
-
-			m.form.Form = updatedForm
-			return m, cmd
 		case tea.KeyEnter:
-			if !form.Confirm {
-				return m, tea.Quit
-			}
-
 			if m.state == DisplayingForm {
-				m.start = form.Confirm
+				m.formSubmitted = true
 
-				if m.start {
+				updatedModel, _ := m.form.Form.Update(msg)
+
+				updatedForm, ok := updatedModel.(*huh.Form)
+
+				if !ok {
+					return m, nil
+				}
+				m.form.Form = updatedForm
+
+				m.formSubmitted = true
+				log.Printf("Form submitted, Test value: %s\n", form.Confirm)
+
+				if form.Confirm == "no" {
+					return m, tea.Quit
+				}
+				if form.Confirm == "yes" {
 					m.state = TimerStarted
 					m.timerState = CountingMinutes
 					return m, m.minutesTimer.StartTimer(minutesDuration, minutesInterval)
 				}
+
 			}
 		}
 	}
 
 	switch m.state {
+	case DisplayingForm:
+		var cmd tea.Cmd
+
+		updatedModel, cmd := m.form.Form.Update(msg)
+
+		updatedForm, ok := updatedModel.(*huh.Form)
+
+		if !ok {
+			return m, nil
+		}
+
+		m.form.Form = updatedForm
+		return m, cmd
+	// case formSubmitted:
+	// 	log.Printf("What is Confirm in this case: %+v\n\n", form.Confirm)
+	// 	m.state = TimerStarted
+	// 	m.timerState = CountingMinutes
+	// 	return m, m.minutesTimer.StartTimer(minutesDuration, minutesInterval)
+
 	case TimerStarted:
 		switch m.timerState {
 		case CountingMinutes:
