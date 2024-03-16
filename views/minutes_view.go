@@ -5,12 +5,15 @@ import (
 
 	"github.com/charmbracelet/bubbles/timer"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type MinutesModel struct {
 	duration                time.Duration
 	Timer                   timer.Model
 	MinutesFirstRunComplete bool
+	Width                   int
+	Height                  int
 }
 
 func NewMinutesModel(duration, interval time.Duration) tea.Model {
@@ -47,10 +50,26 @@ func (m *MinutesModel) Reset(duration, interval time.Duration) tea.Cmd {
 
 func (m MinutesModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
+
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.Width = msg.Width
+		m.Height = msg.Height
+	}
 	m.Timer, cmd = m.Timer.Update(msg)
 	return m, cmd
 }
 
 func (m MinutesModel) View() string {
-	return m.Timer.View()
+	return lipgloss.Place(
+		m.Width,
+		m.Height,
+		lipgloss.Center,
+		lipgloss.Center,
+		lipgloss.JoinVertical(
+			lipgloss.Center,
+			m.Timer.View(),
+		),
+	)
+	// return m.Timer.View()
 }

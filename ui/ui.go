@@ -181,7 +181,18 @@ func (m MainModel) View() string {
 	case TimerStarted:
 		switch m.timerState {
 		case CountingMinutes:
-			return m.minutesTimer.View()
+			return lipgloss.Place(
+				m.minutesTimer.Width,
+				m.minutesTimer.Height,
+				lipgloss.Center,
+				lipgloss.Center,
+				lipgloss.JoinVertical(
+					lipgloss.Center,
+					m.minutesTimer.View(),
+				),
+			)
+
+			// return m.minutesTimer.View()
 		case CountingSeconds:
 			return m.secondsTimer.View()
 		}
