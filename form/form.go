@@ -4,18 +4,16 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
-// var Confirm string // true if user selects affirmative case
+var Confirm string // true if user selects affirmative case
 
 type FormModel struct {
-	Form    *huh.Form
-	Confirm string
+	Form *huh.Form
 }
 
 func CreateForm() FormModel {
 	charm := huh.ThemeCharm()
-	formModel := FormModel{}
 
-	formModel.Form = huh.NewForm(
+	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().
 				Title("Are you ready to get started?").
@@ -24,9 +22,9 @@ func CreateForm() FormModel {
 					huh.NewOption[string]("Yes, but run in the background.", "background"),
 					huh.NewOption[string]("No.", "no"),
 				).
-				Value(&formModel.Confirm),
+				Value(&Confirm),
 		),
 	).WithTheme(charm)
 
-	return formModel
+	return FormModel{Form: form}
 }
