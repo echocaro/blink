@@ -22,6 +22,7 @@ type (
 
 const (
 	DisplayingForm AppState = iota
+	formSubmitted
 	TimerStarted
 )
 
@@ -38,12 +39,13 @@ const (
 )
 
 type MainModel struct {
-	form         form.FormModel
-	secondsTimer views.SecondsModel
-	minutesTimer views.MinutesModel
-	TimerModel   timer.Model
-	state        AppState
-	timerState   TimerState
+	form          form.FormModel
+	secondsTimer  views.SecondsModel
+	minutesTimer  views.MinutesModel
+	TimerModel    timer.Model
+	state         AppState
+	timerState    TimerState
+	formSubmitted bool
 }
 
 func InitialModel() MainModel {
@@ -51,11 +53,12 @@ func InitialModel() MainModel {
 	secondsModel := views.NewSecondsModel(20 * time.Second)
 
 	return MainModel{
-		timerState:   TimerStopped,
-		state:        DisplayingForm,
-		form:         form.CreateForm(),
-		minutesTimer: minutesModel.(views.MinutesModel),
-		secondsTimer: secondsModel.(views.SecondsModel),
+		timerState:    TimerStopped,
+		state:         DisplayingForm,
+		form:          form.CreateForm(),
+		minutesTimer:  minutesModel.(views.MinutesModel),
+		secondsTimer:  secondsModel.(views.SecondsModel),
+		formSubmitted: false,
 	}
 }
 
@@ -74,15 +77,33 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		switch msg.Type {
 		case tea.KeyEnter:
-			log.Printf("What is Confirm: %+v", m.form.Confirm)
-			if m.form.Confirm == "no" {
-				return m, tea.Quit
-			}
-
 			if m.state == DisplayingForm {
-				m.state = TimerStarted
-				m.timerState = CountingMinutes
-				return m, m.minutesTimer.StartTimer(minutesDuration, minutesInterval)
+				m.formSubmitted = true
+
+				updatedModel, _ := m.form.Form.Update(msg)
+
+				updatedForm, ok := updatedModel.(*huh.Form)
+
+				if !ok {
+					return m, nil
+				}
+				m.form.Form = updatedForm
+
+				m.formSubmitted = true
+				log.Printf("Form submitted, Test value: %s\n", form.Confirm)
+
+				if form.Confirm == "no" {
+					return m, tea.Quit
+				}
+				if form.Confirm == "background" {
+					return m, tea.Quit
+				}
+				if form.Confirm == "yes" {
+					m.state = TimerStarted
+					m.timerState = CountingMinutes
+					return m, m.minutesTimer.StartTimer(minutesDuration, minutesInterval)
+				}
+
 			}
 		}
 	}
@@ -99,10 +120,13 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		}
 
-		log.Printf("What is confirm here: %+v", m.form.Confirm)
-
 		m.form.Form = updatedForm
 		return m, cmd
+	// case formSubmitted:
+	// 	log.Printf("What is Confirm in this case: %+v\n\n", form.Confirm)
+	// 	m.state = TimerStarted
+	// 	m.timerState = CountingMinutes
+	// 	return m, m.minutesTimer.StartTimer(minutesDuration, minutesInterval)
 
 	case TimerStarted:
 		switch m.timerState {
