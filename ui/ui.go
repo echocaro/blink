@@ -33,7 +33,7 @@ const (
 )
 
 const (
-	minutesDuration = 20 * time.Minute
+	minutesDuration = 5 * time.Second
 	minutesInterval = time.Second
 	secondsDuration = 20 * time.Second
 )
@@ -211,11 +211,14 @@ func (m MainModel) View() string {
 				Bold(true).
 				BorderForeground(lipgloss.Color("#F780E2")).
 				BorderStyle(lipgloss.NormalBorder()).
-				// Background(lipgloss.Color("#7D56F4")).
 				PaddingTop(2).
 				PaddingBottom(2).
-				PaddingLeft(4).
-				Width(40)
+				Width(40).Align(lipgloss.Center)
+
+			footer := lipgloss.NewStyle().
+				Faint(true).
+				Align(lipgloss.Center)
+
 			return lipgloss.Place(
 				m.minutesTimer.Width,
 				m.minutesTimer.Height,
@@ -223,8 +226,8 @@ func (m MainModel) View() string {
 				lipgloss.Center,
 				lipgloss.JoinVertical(
 					lipgloss.Center,
-					style.Render(m.secondsTimer.View()),
-					"To exit, press ctrl+c",
+					style.Render("Look at something 20 feet away: \n\n"+m.secondsTimer.View()),
+					footer.Render("To exit, press ctrl+c or q"),
 				),
 			)
 		}
