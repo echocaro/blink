@@ -132,8 +132,8 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.minutesTimer = updatedModel.(views.MinutesModel)
 
 			if m.minutesTimer.Timer.Timedout() && !m.minutesTimer.Timer.Running() {
-				notification.Notify("Rest your eyes", "Look at something 20 feet away!")
-				sound.Sound()
+				go notification.Notify("Rest your eyes", "Look at something 20 feet away!")
+				go sound.Sound()
 				m.timerState = CountingSeconds
 				return m, m.secondsTimer.Start()
 			}
@@ -143,8 +143,8 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			updatedModel, cmd := m.secondsTimer.Update(msg)
 			m.secondsTimer = updatedModel.(views.SecondsModel)
 			if m.secondsTimer.Timer.Timedout() && !m.secondsTimer.Timer.Running() {
-				notification.Notify("Time's up!", "You can look at the screen again!")
-				sound.Sound()
+				go notification.Notify("Time's up!", "You can look at the screen again!")
+				go sound.Sound()
 				m.timerState = CountingMinutes
 				return m, m.minutesTimer.StartTimer(minutesDuration, minutesInterval)
 			}
