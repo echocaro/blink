@@ -5,7 +5,6 @@ import (
 
 	"github.com/charmbracelet/bubbles/timer"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
 type MinutesModel struct {
@@ -61,15 +60,5 @@ func (m MinutesModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m MinutesModel) View() string {
-	return lipgloss.Place(
-		m.Width,
-		m.Height,
-		lipgloss.Center,
-		lipgloss.Center,
-		lipgloss.JoinVertical(
-			lipgloss.Center,
-			m.Timer.View(),
-		),
-	)
-	// return m.Timer.View()
+	return m.Timer.View()
 }

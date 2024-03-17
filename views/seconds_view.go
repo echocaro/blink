@@ -48,5 +48,5 @@ func (s SecondsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (s SecondsModel) View() string {
-	return s.Timer.View()
+	return "Look 20 feet away" + s.Timer.View()
 }
