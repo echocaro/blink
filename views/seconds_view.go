@@ -11,6 +11,8 @@ type SecondsModel struct {
 	duration                time.Duration
 	Timer                   timer.Model
 	SecondsFirstRunComplete bool
+	Width                   int
+	Height                  int
 }
 
 func NewSecondsModel(duration time.Duration) tea.Model {
@@ -43,6 +45,12 @@ func (s SecondsModel) Init() tea.Cmd {
 
 func (s SecondsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		s.Width = msg.Width
+		s.Height = msg.Height
+	}
+
 	s.Timer, cmd = s.Timer.Update(msg)
 	return s, cmd
 }
