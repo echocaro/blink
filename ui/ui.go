@@ -33,7 +33,7 @@ const (
 )
 
 const (
-	minutesDuration = 5 * time.Second
+	minutesDuration = 20 * time.Minute
 	minutesInterval = time.Second
 	secondsDuration = 20 * time.Second
 )
@@ -220,8 +220,8 @@ func (m MainModel) View() string {
 				Align(lipgloss.Center)
 
 			return lipgloss.Place(
-				m.minutesTimer.Width,
-				m.minutesTimer.Height,
+				m.secondsTimer.Width,
+				m.secondsTimer.Height,
 				lipgloss.Center,
 				lipgloss.Center,
 				lipgloss.JoinVertical(
