@@ -181,9 +181,55 @@ func (m MainModel) View() string {
 	case TimerStarted:
 		switch m.timerState {
 		case CountingMinutes:
-			return m.minutesTimer.View()
+			style := lipgloss.NewStyle().
+				Bold(true).
+				BorderForeground(lipgloss.Color("#F780E2")).
+				BorderStyle(lipgloss.NormalBorder()).
+				PaddingTop(2).
+				PaddingBottom(2).
+				Width(40).Align(lipgloss.Center)
+
+			footer := lipgloss.NewStyle().
+				Faint(true).
+				Align(lipgloss.Center)
+
+			return lipgloss.Place(
+				m.minutesTimer.Width,
+				m.minutesTimer.Height,
+				lipgloss.Center,
+				lipgloss.Center,
+				lipgloss.JoinVertical(
+					lipgloss.Center,
+					style.Render("A short 👀 break is on the horizon: \n\n"+m.minutesTimer.View()),
+					footer.Render("To exit, press ctrl+c or q"),
+				),
+			)
+
+			// return m.minutesTimer.View()
 		case CountingSeconds:
-			return m.secondsTimer.View()
+			style := lipgloss.NewStyle().
+				Bold(true).
+				BorderForeground(lipgloss.Color("#F780E2")).
+				BorderStyle(lipgloss.NormalBorder()).
+				PaddingTop(2).
+				PaddingBottom(2).
+				Width(40).Align(lipgloss.Center)
+
+			footer := lipgloss.NewStyle().
+				Faint(true).
+				Align(lipgloss.Center)
+
+			return lipgloss.Place(
+				m.secondsTimer.Width,
+				m.secondsTimer.Height,
+				lipgloss.Center,
+				lipgloss.Center,
+				lipgloss.JoinVertical(
+					lipgloss.Center,
+					style.Render("Look at something 20 feet away: \n\n"+m.secondsTimer.View()),
+					footer.Render("To exit, press ctrl+c or q"),
+				),
+			)
 		}
 	}
 
