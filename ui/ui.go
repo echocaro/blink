@@ -181,6 +181,15 @@ func (m MainModel) View() string {
 	case TimerStarted:
 		switch m.timerState {
 		case CountingMinutes:
+			style := lipgloss.NewStyle().
+				Bold(true).
+				BorderForeground(lipgloss.Color("#F780E2")).
+				BorderStyle(lipgloss.NormalBorder()).
+				// Background(lipgloss.Color("#7D56F4")).
+				PaddingTop(2).
+				PaddingBottom(2).
+				PaddingLeft(4).
+				Width(45)
 			return lipgloss.Place(
 				m.minutesTimer.Width,
 				m.minutesTimer.Height,
@@ -188,13 +197,33 @@ func (m MainModel) View() string {
 				lipgloss.Center,
 				lipgloss.JoinVertical(
 					lipgloss.Center,
-					m.minutesTimer.View(),
+					style.Render("A short 👀 break is on the horizon: \n"+m.minutesTimer.View()),
+					"To exit, press ctrl+c",
 				),
 			)
 
 			// return m.minutesTimer.View()
 		case CountingSeconds:
-			return m.secondsTimer.View()
+			style := lipgloss.NewStyle().
+				Bold(true).
+				BorderForeground(lipgloss.Color("#F780E2")).
+				BorderStyle(lipgloss.NormalBorder()).
+				// Background(lipgloss.Color("#7D56F4")).
+				PaddingTop(2).
+				PaddingBottom(2).
+				PaddingLeft(4).
+				Width(40)
+			return lipgloss.Place(
+				m.minutesTimer.Width,
+				m.minutesTimer.Height,
+				lipgloss.Center,
+				lipgloss.Center,
+				lipgloss.JoinVertical(
+					lipgloss.Center,
+					style.Render(m.secondsTimer.View()),
+					"To exit, press ctrl+c",
+				),
+			)
 		}
 	}
 
