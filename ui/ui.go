@@ -36,6 +36,7 @@ const (
 	minutesDuration = 20 * time.Minute
 	minutesInterval = time.Second
 	secondsDuration = 20 * time.Second
+	secondsInterval = time.Second
 )
 
 type MainModel struct {
@@ -50,7 +51,7 @@ type MainModel struct {
 
 func InitialModel() MainModel {
 	minutesModel := views.NewMinutesModel(minutesDuration, minutesInterval)
-	secondsModel := views.NewSecondsModel(20 * time.Second)
+	secondsModel := views.NewSecondsModel(secondsDuration, secondsInterval)
 
 	return MainModel{
 		timerState:    TimerStopped,

@@ -15,8 +15,8 @@ type SecondsModel struct {
 	Height                  int
 }
 
-func NewSecondsModel(duration time.Duration) tea.Model {
-	tm := timer.NewWithInterval(duration, time.Second)
+func NewSecondsModel(duration time.Duration, interval time.Duration) tea.Model {
+	tm := timer.NewWithInterval(duration, interval)
 
 	return SecondsModel{
 		duration:                duration,
