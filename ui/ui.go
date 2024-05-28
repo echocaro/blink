@@ -120,11 +120,6 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		m.form.Form = updatedForm
 		return m, cmd
-	// case formSubmitted:
-	// 	log.Printf("What is Confirm in this case: %+v\n\n", form.Confirm)
-	// 	m.state = TimerStarted
-	// 	m.timerState = CountingMinutes
-	// 	return m, m.minutesTimer.StartTimer(minutesDuration, minutesInterval)
 
 	case TimerStarted:
 		switch m.timerState {
@@ -161,8 +156,6 @@ func (m MainModel) View() string {
 	switch m.state {
 	case DisplayingForm:
 		paragraphStyle := lipgloss.NewStyle().
-			// Foreground(lipgloss.Color("#7471F9")).
-			// Bold(true).
 			Padding(1, 2, 1, 2).
 			Width(70).
 			Align(lipgloss.Left)
@@ -206,7 +199,6 @@ func (m MainModel) View() string {
 				),
 			)
 
-			// return m.minutesTimer.View()
 		case CountingSeconds:
 			style := lipgloss.NewStyle().
 				Bold(true).
